@@ -6,6 +6,7 @@ const path = require('path')
 const inquirer = require('inquirer');
 const fs = require('fs')
 const Handlebars =require('handlebars')
+const fse = require('fs-extra')
 
 
 const {argv} = yargs
@@ -30,10 +31,6 @@ console.log(result.toString())
 
 const folderName = repo.split('/').pop().split('.')[0]
 
-childProcess.execSync(`
-    rm -rf "${folderName}/.git"
-`)
-
 const pathOuter = dest||process.cwd();
 
 
@@ -45,14 +42,17 @@ const pathOuter = dest||process.cwd();
              message: 'name'
          }
      ])
-    const newPath = path.resolve(pathOuter,answer.name)
-    fs.renameSync(path.resolve(pathOuter,folderName), newPath)
+    childProcess.execSync(`
+    rm -rf "${pathOuter}/${folderName}/.git";
+`)
+    const path1 = path.resolve(pathOuter,folderName)
+    fse.copySync(path1,pathOuter)
+    fse.removeSync(path1)
     const option = {
-        srcPath:path.resolve(newPath,'package.json'),
+        srcPath:path.resolve(pathOuter,'package.json'),
         data:{ "name": answer.name}
     }
     await f(option)
-
     console.log('end')
 
 })()
