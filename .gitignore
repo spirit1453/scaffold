@@ -1,0 +1,16 @@
+#node
+node_modules
+package-lock.json
+
+#IDE
+.idea
+.vscode
+
+#mac
+.DS_Store
+
+#dev
+dist
+
+#custom
+local
